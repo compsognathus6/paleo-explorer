@@ -7,3 +7,6 @@ dist
 coverage
 playwright-report
 test-results
+
+# Development logs and notes
+docs/bitacora/
