@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@paleo-explorer/contracts": "workspace:*",
     "@tanstack/react-query": "^5.90.21",
     "@types/geojson": "^7946.0.16",
     "maplibre-gl": "^5.19.0",
