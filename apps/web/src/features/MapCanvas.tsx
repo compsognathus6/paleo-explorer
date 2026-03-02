@@ -1,4 +1,4 @@
-import { useMapLibre } from '@web/hooks/useMapLibre'
+import { useMapLibre } from '@/hooks/useMapLibre'
 import './MapCanvas.css'
 
 export const MapCanvas = () => {
