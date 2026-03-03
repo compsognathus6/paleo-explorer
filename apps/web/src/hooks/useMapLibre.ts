@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 import maplibregl from 'maplibre-gl'
 
 export interface UseMapLibreOptions {
@@ -16,39 +16,42 @@ const boundsToBboxParam = (bounds: maplibregl.LngLatBounds): string => {
 
 export const useMapLibre = (options?: UseMapLibreOptions) => {
   const mapRef = useRef<maplibregl.Map | null>(null)
+  const onMoveEndRef = useRef<UseMapLibreOptions['onMoveEnd']>(options?.onMoveEnd)
 
-  const setContainerRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      if (!node) {
-        mapRef.current?.remove()
-        mapRef.current = null
-        return
-      }
+  // Mantiene el callback actualizado sin recrear el mapa
+  useEffect(() => {
+    onMoveEndRef.current = options?.onMoveEnd
+  }, [options?.onMoveEnd])
 
-      if (mapRef.current) return
+  const setContainerRef = useCallback((node: HTMLDivElement | null) => {
+    if (!node) {
+      mapRef.current?.remove()
+      mapRef.current = null
+      return
+    }
 
-      const map = new maplibregl.Map({
-        container: node,
-        style: 'https://demotiles.maplibre.org/style.json',
-        center: [4.2658, 39.8885],
-        zoom: 5,
-      })
+    if (mapRef.current) return
 
-      map.addControl(new maplibregl.NavigationControl(), 'top-right')
+    const map = new maplibregl.Map({
+      container: node,
+      style: 'https://demotiles.maplibre.org/style.json',
+      center: [4.2658, 39.8885],
+      zoom: 5,
+    })
 
-      const emitBox = () => {
-        const bbox = boundsToBboxParam(map.getBounds())
-        console.log(`[Map Bbox] ${bbox}`)
-        options?.onMoveEnd(bbox)
-      }
+    map.addControl(new maplibregl.NavigationControl(), 'top-right')
 
-      map.on('load', emitBox)
-      map.on('moveend', emitBox)
+    const emitBox = () => {
+      const bbox = boundsToBboxParam(map.getBounds())
+      console.log(`[Map Bbox] ${bbox}`)
+      onMoveEndRef.current?.(bbox)
+    }
 
-      mapRef.current = map
-    },
-    [options],
-  )
+    map.on('load', emitBox)
+    map.on('moveend', emitBox)
+
+    mapRef.current = map
+  }, [])
 
   return { setContainerRef, mapRef }
 }
