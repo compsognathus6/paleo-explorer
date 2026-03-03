@@ -12,6 +12,8 @@
     ]
   },
   "scripts": {
+    "dev:web": "pnpm --filter ./apps/web dev",
+    "dev:api": "pnpm --filter ./apps/api dev",
     "lint": "pnpm -r lint",
     "lint:fix": "pnpm -r lint:fix",
     "format": "prettier . --check",
@@ -35,6 +37,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.0"
   }
 }
